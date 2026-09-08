@@ -9,7 +9,7 @@ type InformationStore interface {
 	GetByTheme(theme string) ([]*models.Information, error)
 	GetAll() ([]*models.Information, error)
 	Create(information *models.Information) (*models.Information, error)
-	Update(id, information *models.Information) (models.Information, error)
+	Update(information *models.Information, id int) error
 	Delete(id int) error
 }
 
@@ -61,6 +61,38 @@ func (s *store) GetByTheme(theme string) ([]*models.Information, error) {
 
 }
 
-func (s *store) Create(id, information *models.Information) (*models.Information, error) {
+func (s *store) Create(information *models.Information) (*models.Information, error) {
+	q := "INSERT INTO TABLE INFORMATION (theme, description), VALUES (?,?)"
+	resp, err := s.db.Exec(q, information.Theme, information.Description)
+	if err != nil {
+		return nil, err
+	}
+	id, err := resp.LastInsertId()
 
+	if err != nil {
+		return nil, err
+	}
+
+	information.Id = int(id)
+	return information, nil
+}
+
+func (s *store) Update(information *models.Information, id int) error {
+	q := "UPDATE INFORMATION SET theme = ?, description = ? WHERE id = ? "
+	_, err := s.db.Exec(q, information.Theme, information.Description)
+
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (s *store) Delete(id int) error {
+	q := "DELETE FROM INFORMATION WHERE id = ?"
+	_, err := s.db.Exec(q, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
