@@ -1,3 +1,5 @@
 backend
 lestremember.db
 *.db
+.env 
+
