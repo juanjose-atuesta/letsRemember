@@ -1,7 +1,7 @@
 package models
 
 type Schedule struct {
-	Id               int    `json: "id"`
-	Day              string `json: "day"`
-	eventDescription string `json: "eventDescription"`
+	Id               int    `json:"id"`
+	Day              string `json:"day"`
+	EventDescription string `json:"eventDescription"`
 }

@@ -22,7 +22,7 @@ func New(db *sql.DB) InformationStore {
 }
 
 func (s *store) GetAll() ([]*models.Information, error) {
-	q := "SELECT theme, description FROM INFORMATION"
+	q := "SELECT id, theme, description FROM INFORMATION"
 	rows, err := s.db.Query(q)
 	if err != nil {
 		return nil, err
@@ -30,9 +30,9 @@ func (s *store) GetAll() ([]*models.Information, error) {
 
 	defer rows.Close()
 
-	var information []*models.Information
+	var information = []*models.Information{}
 	for rows.Next() {
-		var b *models.Information
+		b := &models.Information{}
 		if err := rows.Scan(&b.Id, &b.Theme, &b.Description); err != nil {
 			return nil, err
 
@@ -43,14 +43,14 @@ func (s *store) GetAll() ([]*models.Information, error) {
 }
 
 func (s *store) GetByTheme(theme string) ([]*models.Information, error) {
-	q := "SELECT theme, description FROM INFORMATION WHERE theme = ?"
-	var information []*models.Information
+	q := "SELECT id, theme, description FROM INFORMATION WHERE theme = ?"
+	var information = []*models.Information{}
 	rows, err := s.db.Query(q, theme)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var b *models.Information
+		b := &models.Information{}
 		if err := rows.Scan(&b.Id, &b.Theme, &b.Description); err != nil {
 			return nil, err
 		}
@@ -62,7 +62,7 @@ func (s *store) GetByTheme(theme string) ([]*models.Information, error) {
 }
 
 func (s *store) Create(information *models.Information) (*models.Information, error) {
-	q := "INSERT INTO TABLE INFORMATION (theme, description), VALUES (?,?)"
+	q := "INSERT INTO INFORMATION (theme, description) VALUES (?, ?)"
 	resp, err := s.db.Exec(q, information.Theme, information.Description)
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (s *store) Create(information *models.Information) (*models.Information, er
 
 func (s *store) Update(information *models.Information, id int) error {
 	q := "UPDATE INFORMATION SET theme = ?, description = ? WHERE id = ? "
-	_, err := s.db.Exec(q, information.Theme, information.Description)
+	_, err := s.db.Exec(q, information.Theme, information.Description, id)
 
 	if err != nil {
 		return err
