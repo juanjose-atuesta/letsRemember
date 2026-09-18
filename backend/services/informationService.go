@@ -31,6 +31,6 @@ func (s *InformationService) UpdateInformation(newInformation *models.Informatio
 	return s.store.Update(newInformation, id)
 }
 
-func (s *InformationService) DeeleteInformation(id int) error {
+func (s *InformationService) DeleteInformation(id int) error {
 	return s.store.Delete(id)
 }

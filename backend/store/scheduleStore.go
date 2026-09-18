@@ -5,7 +5,7 @@ import (
 	"database/sql"
 )
 
-type ScheludeStore interface {
+type ScheduleStore interface {
 	GetAll() ([]*models.Schedule, error)
 
 	Create(information *models.Schedule) (*models.Schedule, error)
@@ -17,13 +17,13 @@ type storeSc struct {
 	db *sql.DB
 }
 
-func News(db *sql.DB) ScheludeStore {
+func NewScheludeStore(db *sql.DB) ScheduleStore {
 	return &storeSc{db: db}
 }
 
 func (s *storeSc) GetAll() ([]*models.Schedule, error) {
 
-	q := " SELECT id, day, eventDescription FROM SCHELUDE"
+	q := " SELECT id, day, eventDescription FROM SCHEDULE"
 	rows, err := s.db.Query(q)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (s *storeSc) GetAll() ([]*models.Schedule, error) {
 }
 
 func (s *storeSc) Create(information *models.Schedule) (*models.Schedule, error) {
-	q := "INSERT INTO SCHELUDE (day, eventDescription) VALUES (?,?)"
+	q := "INSERT INTO SCHEDULE (day, eventDescription) VALUES (?,?)"
 	res, err := s.db.Exec(q, information.Day, information.EventDescription)
 
 	if err != nil {
@@ -62,7 +62,7 @@ func (s *storeSc) Create(information *models.Schedule) (*models.Schedule, error)
 }
 
 func (s *storeSc) Update(information *models.Schedule, id int) error {
-	q := "UPDATE SCHELUDE SET day = ?, eventDescription = ? WHERE id = ? "
+	q := "UPDATE SCHEDULE SET day = ?, eventDescription = ? WHERE id = ? "
 	_, err := s.db.Exec(q, information.Day, information.EventDescription, id)
 
 	if err != nil {
@@ -73,7 +73,7 @@ func (s *storeSc) Update(information *models.Schedule, id int) error {
 }
 
 func (s *storeSc) Delete(id int) error {
-	q := "DELETE FROM SCHELUDE WHERE id = ?"
+	q := "DELETE FROM SCHEDULE WHERE id = ?"
 	_, err := s.db.Exec(q, id)
 	if err != nil {
 		return err

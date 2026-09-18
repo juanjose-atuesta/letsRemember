@@ -83,7 +83,7 @@ func (h *InformationHandler) HandlerInformationByParamether(w http.ResponseWrite
 		if err != nil {
 			http.Error(w, "no se encontro", http.StatusBadRequest)
 		}
-		if err := h.service.DeeleteInformation(parametroInt); err != nil {
+		if err := h.service.DeleteInformation(parametroInt); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.WriteHeader(http.StatusNoContent)
